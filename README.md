@@ -1,8 +1,4 @@
 <div id="top"></div>
-
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
@@ -216,12 +212,6 @@ Project Link: [https://github.com/Anthonyr06/Emailit](https://github.com/Anthony
 
 
 
-[contributors-shield]: https://img.shields.io/github/contributors/Anthonyr06/Emailit.svg?style=for-the-badge
-[contributors-url]: https://github.com/Anthonyr06/Emailit/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/Anthonyr06/Emailit.svg?style=for-the-badge
-[forks-url]: https://github.com/Anthonyr06/Emailit/network/members
-[stars-shield]: https://img.shields.io/github/stars/Anthonyr06/Emailit.svg?style=for-the-badge
-[stars-url]: https://github.com/Anthonyr06/Emailit/stargazers
 [issues-shield]: https://img.shields.io/github/issues/Anthonyr06/Emailit.svg?style=for-the-badge
 [issues-url]: https://github.com/Anthonyr06/Emailit/issues
 [license-shield]: https://img.shields.io/github/license/Anthonyr06/Emailit.svg?style=for-the-badge
