@@ -1,0 +1,112 @@
+﻿@page
+@model             IndexModel
+@{
+
+    ViewData["Title"] = "Homepage";
+    Layout = "_Layout";
+}
+
+<div class="row pl-3">
+    <div class="col">
+        <div class="row">
+            @*message close: col-xl-3 col-md-4 *@
+            @*message open: col-xl-5   *@
+            <div class="col-md-3 col-xl-2 mb-3" id="OpcionesInboxCol">
+                <div class="list-group list-group-inbox " style="border-radius:1rem;">
+                    <a href="#" id="InboxRecivedMsgBtn" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        <span>
+                            <img src="~/icon/receivedMessages.svg" class="mb-1 mr-2" style="width:1.2rem;">
+                            Inbox
+                        </span>
+                        <span class="badge badge-primary badge-pill"></span>
+                    </a>
+
+                    <a href="#" id="InboxSentMsgBtn" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        <span>
+                            <img src="~/icon/sentMessages.svg" class="mb-1 mr-2 " style="width:1.2rem;">
+                            Sent
+                        </span>
+                        @*<span class="badge badge-primary badge-pill"></span>*@
+                    </a>
+
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="card" style="border-radius:1rem;overflow:hidden;">
+                    <div class="card-header p-2">
+                        <div class="row">
+                            @*Message open: d-none *@
+                            <div class="col" id="TitleMsgListCard">
+                                <h5 id="TitleMsgListCard1" class="pl-2 pt-2" style="display:none">
+                                    <img src="~/icon/inbox.svg" class="mr-2 mb-1" style="width:1.7rem;" />Received messages
+                                </h5>
+                                <h5 id="TitleMsgListCard2" class="pl-2 pt-2" style="display:none">
+                                    <img src="~/icon/sent.svg" class="mr-2" style="width:2rem;" />Sent messages
+                                </h5>
+                            </div>
+                            <div class="col">
+                                <div class="input-group ">
+                                    <input type="text" id="searchMsgInputTxt" placeholder="Search" class="form-control" style="border-right:0!important;"
+                                           maxlength="100">
+                                    <div class="input-group-append">
+                                        <a id="clearSearchMsgBtn" class="btn border border-left-0 border-right-0 px-0 bg-white" style="display:none">
+                                            <img src="~/icon/close-black.svg" class="winered-filter" style="width:1rem;" />
+                                        </a>
+                                        <button id="btnSearchMsg" class="btn border border-left-0 bg-white" type="submit">
+                                            <img src="~/icon/search.svg" class="primarybootstrap-filter" style="width:1rem;" />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="msgList" class="list-group list-group-flush customScroll1 pre-scrollable" style="min-height:75vh;">
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+    <div id="OpenMessage" style="--animate-duration:400ms;">
+
+    </div>
+
+</div>
+@*Custom context menu*@
+<div class="context-menu ">
+    <div class="list-group">
+        <button id="btnForwardFromContextMenu" class="list-group-item list-group-item-action p-2" data-toggle="modal" data-target="#NuevoOficioModal">
+            <img src="~/icon/right-arrow.svg" class="mb-1" style="max-width:1rem;" />
+            Forward
+        </button>
+        <button class="list-group-item list-group-item-action p-2" id="btnDeleteMsgFromContextMenu" data-toggle="modal" data-target="#deleteModal">
+            <img src="~/icon/delete.svg" class="mb-1" style="max-width:1rem;" />
+            Delete
+        </button>
+    </div>
+</div>
+@*Delete Modal*@
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete message</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>&iquest;Are you sure? This action can not be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" id="deleteMessageConfirmationBtn" class="btn btn-danger" data-dismiss="modal">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="notificationsContainer" class="mb-3" style="z-index: 999;position: fixed;bottom: 0;"></div>

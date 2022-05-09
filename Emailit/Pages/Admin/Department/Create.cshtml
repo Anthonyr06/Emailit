@@ -1,0 +1,75 @@
+﻿@page
+@model             CreateModel
+
+@{
+    ViewData["Title"] = "Create department";
+}
+
+<div class="card mx-5">
+	<h5 class="card-header bg-warning">
+		<img src="~/icon/pen.svg" class="mb-1" style="width:1.2rem;" />
+		@ViewData["Title"]
+	</h5>
+
+	<div class="card-body">
+		<partial name="_ModelStatusMessage" model="Model" />
+		<form class="container" method="post">
+
+			<div class="form-row">
+				<div class="col-md-5">
+					<div class="form-group">
+						<label asp-for="Name" class="control-label font-weight-bold"></label>
+						<input asp-for="Name" class="form-control " autocomplete="off" />
+						<span asp-validation-for="Name" class="invalid-feedback"></span>
+					</div>
+				</div>
+				<div class="col-md-5">
+					<div class="form-group">
+						<label asp-for="ManagerIdCard" class="control-label font-weight-bold"></label>
+						<input asp-for="ManagerIdCard" class="form-control" data-inputmask="'mask': '999-9999999-9'" />
+						<span asp-validation-for="ManagerIdCard" class="invalid-feedback"></span>
+					</div>
+				</div>
+			</div>
+
+			<div class="form-row">
+				<div class="col-md-5">
+					<div class="form-group">
+						<label asp-for="BranchOfficeId" class="control-label font-weight-bold"></label>
+						<select asp-for="BranchOfficeId" class="form-control custom-select" asp-items="Model.BranchOfficesList">
+							<option selected="selected" value="">-Choose an office-</option>
+						</select>
+						<span asp-validation-for="BranchOfficeId" class="invalid-feedback"></span>
+					</div>
+				</div>
+				<div class="col-md-5">
+				<div></div>
+				</div>
+			</div>
+			@if ((await AuthorizationService.AuthorizeAsync(User, Models.Permissions.DeactivateDepartments.ToString())).Succeeded)
+			{
+				<div class="form-group">
+					<div class="custom-control custom-switch">
+						<input asp-for="Active" type="checkbox" class="custom-control-input" id="DeptoActiveChk" checked />
+						<label asp-for="Active" class="custom-control-label" for="DeptoActiveChk"></label>
+					</div>
+				</div>
+			}
+
+
+			<div class="row mt-5">
+				<div class="col-sm">
+					<div class="form-group">
+						<input type="submit" value="Save" class="btn btn-primary" />
+						<a asp-page="Index" class="btn btn-secondary">Cancel</a>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+
+@section Scripts {
+    <partial name="ResourcesPartialViews/_ValidationScriptsPartial" />
+}

@@ -1,0 +1,59 @@
+﻿@page
+@model             IndexModel
+@{
+    ViewData["Title"] = "Ajustes";
+}
+    <div class="mb-4">
+        <h4>Your information</h4>
+    </div>
+
+<form method="post">
+    <div class="row">
+        <div class="col-md-8">
+            <partial name="_ModelStatusMessage" model="Model" />
+            <div class="form-group">
+                <label asp-for="Name" class="control-label font-weight-bold"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LastName" class="control-label font-weight-bold"></label>
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label font-weight-bold"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div class="mb-1">
+                    <label asp-for="Gender" class="control-label font-weight-bold"></label>
+                </div>
+                @foreach (var item in Enum.GetValues(typeof(Gender)))
+                {
+                    var genderName = item.GetType()
+                    .GetMember(item.ToString())
+                    .First()
+                    .GetCustomAttribute<DisplayAttribute>()
+                    .GetName();
+
+                    var genderId = "G-" + (int)item;
+                    <div class="custom-control custom-radio custom-control-inline">
+                        @Html.RadioButtonFor(m => m.Gender, item, new { @class = "custom-control-input", id = genderId })
+                        @Html.LabelFor(m => m.Gender, genderName, new { @class = "custom-control-label", @for = genderId })
+
+                    </div>
+                }
+                <div class="mt-2">
+                    <span asp-validation-for="Gender" class="text-danger small"></span>
+                </div>
+            </div>
+            <div class="form-group mt-5 pt-2">
+                <input type="submit" value="Save" class="btn btn-success" />
+            </div>
+        </div>
+    </div>
+</form>
+
+

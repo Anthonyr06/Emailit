@@ -1,0 +1,35 @@
+@{
+    Layout = "../_LayoutConfiguration.cshtml";
+    String pageRoute = ViewContext.RouteData.Values["page"].ToString();
+}
+<div class="card">
+        <div class="card-header">
+            
+            <h4 class="ml-3"><img src="~/icon/settings.svg" class="mb-1" style="max-width:1.5rem;" />
+            &nbsp;Manage your account
+            </h4>
+        </div>
+        <div class="card-body">
+            <div class="container">
+                <div class="row mb-5 pb-5">
+                    <div class="col-5 col-md-3 mt-5">
+                        <div class="list-group">
+                            <a asp-page="Index" class="list-group-item list-group-item-action @( pageRoute.Contains("/Index") ? "active" : "" )">
+                                <img src="~/icon/user.svg" class="mb-2  @(pageRoute.Contains("/Index") ? "white-filter" : "" )" style="max-width:1.2rem;" />
+                                &nbsp;Profile
+                            </a>
+                            <a asp-page="ChangePassword" class="list-group-item list-group-item-action @( pageRoute.Contains("/ChangePassword") ? "active" : "" )">
+                                <img src="~/icon/key.svg" class="mb-1 @(pageRoute.Contains("/ChangePassword") ? "white-filter" : "" )" style="max-width:1.4rem;" />
+                                Password
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-7 col-md-8 offset-md-1">@RenderBody()</div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+@section Scripts {
+    <partial name="ResourcesPartialViews/_ValidationScriptsPartial" />
+}

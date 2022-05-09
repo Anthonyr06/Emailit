@@ -1,0 +1,91 @@
+﻿@page
+@model             CreateModel
+
+@{
+    ViewData["Title"] = "Create role";
+}
+
+<div class="card mx-5">
+    <h5 class="card-header bg-warning">
+        <img src="~/icon/pen.svg" class="mb-1" style="width:1.2rem;" />
+        @ViewData["Title"]
+    </h5>
+
+    <div class="card-body">
+        <partial name="_ModelStatusMessage" model="Model" />
+        <form class="container" method="post">
+
+            <div class="form-row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label asp-for="Name" class="control-label font-weight-bold"></label>
+                        <input asp-for="Name" class="form-control " autocomplete="off" />
+                        <span asp-validation-for="Name" class="invalid-feedback"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Description" class="control-label font-weight-bold"></label>
+                        <textarea asp-for="Description" class="form-control" autocomplete="off"></textarea>
+                        <span asp-validation-for="Description" class="invalid-feedback"></span>
+                    </div>
+                    @if ((await AuthorizationService.AuthorizeAsync(User, Permissions.DeactivateRoles.ToString())).Succeeded)
+                    {
+                <div class="form-group">
+                    <div class="custom-control custom-switch">
+                        <input asp-for="Active" type="checkbox" class="custom-control-input" id="RoleActiveChk" checked/>
+                        <label asp-for="Active" class="custom-control-label" for="RoleActiveChk"></label>
+                    </div>
+                </div>
+                    }
+                    
+                </div>
+                <div class="col-sm-6">
+                    <label asp-for="PermissionsList" class="control-label font-weight-bold" style="font-size: 1.1rem;"></label>
+                    <p class="text-danger small check-list-at-least-one-msg" hidden>Select at least one permission</p>
+                    <div class="container overflow-auto customScroll1 my-2" style="max-height:18rem;">
+                        @foreach (Permissions item in Enum.GetValues(typeof(Permissions)))
+                        {
+                            var PermissionName = item.GetType()
+                                                   .GetMember(item.ToString())
+                                                   .First()
+                                                   .GetCustomAttribute<DisplayAttribute>()
+                                                   .GetName();
+
+                            var Permission = (ulong)item;
+
+                            <div class="form-group">
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input check-list-at-least-one"
+                                           id="Perm-@Permission"
+                                           name="@nameof(Model.PermissionsList)"
+                                           value="@Permission"
+                                           @if (Model.PermissionsList != null && Model.PermissionsList.Contains(Permission)) 
+                                           { <text> checked </text> } />
+                                    <label class="custom-control-label" for="Perm-@Permission">
+                                        @PermissionName
+                                    </label>
+                                </div>
+
+                            </div>
+                        }
+                    </div>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm">
+                    <div class="form-group">
+                        <input type="submit" value="Save" class="btn btn-primary" />
+                        <a asp-page="Index" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+</div>
+
+
+@section Scripts {
+    <partial name="ResourcesPartialViews/_ValidationScriptsPartial" />
+}

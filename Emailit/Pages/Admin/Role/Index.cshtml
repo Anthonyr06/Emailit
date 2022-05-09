@@ -1,0 +1,81 @@
+﻿@page
+@model             IndexModel
+
+@{
+    ViewData["Title"] = "Roles";
+}
+
+    <div class="card p-3 p-xl-4">
+        <h3 class="my-3">
+            <img src="~/icon/shield.svg" class="mb-1" style="width:2rem;" />
+            @ViewData["Title"] of the application
+        </h3>
+        <div class="mt-5 mb-3 ml-1">
+            @if ((await AuthorizationService.AuthorizeAsync(User, Permissions.WriteRoles.ToString())).Succeeded)
+            {
+                <a type="button" class="btn btn-sm btn-success rounded-pill " asp-page="Create">
+                    <img src="~/icon/003-add.svg" class="mb-1 white-filter" style="width:1rem;" />
+                    &nbsp;New
+                </a>
+            }
+        </div>
+            <div class="table-responsive-xl border" style="border-radius:1rem!important;overflow-y:hidden;min-height:10rem;">
+                <table class="table table-hover table-borderless ">
+                    <thead class="bg-warning">
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Role[0].Name)
+                            </th>
+                            <th>
+                                Description
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Role)
+                        {
+                            <tr>
+                                <td onclick="window.location='Role/Details?id=@item.RoleId';" style="cursor: pointer;">
+                                    @Html.DisplayFor(modelItem => item.Name)
+                                    @if (!item.Active)
+                                    {
+                                        <img src="~/icon/close-red.svg" style="width:.8rem;" />
+                                    }
+                                </td>
+                                <td onclick="window.location='Role/Details?id=@item.RoleId';" class="text-truncate " style="cursor: pointer;max-width:25rem;max-width: calc( 51 * 1vw );">
+                                    @Html.DisplayFor(modelItem => item.Description)
+                                </td>
+                                <td>
+                                    @if ((await AuthorizationService.AuthorizeAsync(User, Permissions.WriteRoles.ToString())).Succeeded)
+                                    {
+                                        <div class="dropdown">
+                                            <a role="button" id="dropdownMenuLink" data-toggle="dropdown">
+                                                <img src="~/icon/004-more.svg" style="width:1.2rem;transform:rotate(90deg);" />
+                                            </a>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+
+                                                <a class="dropdown-item" asp-page="./Details" asp-route-id="@item.RoleId">
+                                                    <img src="~/icon/info-1.svg" class="mb-1" style="width:1rem;" />
+                                                    Details
+                                                </a>
+                                                <a class="dropdown-item" asp-page="./Edit" asp-route-id="@item.RoleId">
+                                                    <img src="~/icon/edit-1.svg" class="mb-1" style="width:1rem;" />
+                                                    Edit
+                                                </a>
+                                            </div>
+                                        </div>
+                                    }
+                                    </td>
+                            </tr>
+
+                        }
+                    </tbody>
+                </table>
+
+            </div>
+            <div>
+                <partial name="_PaginationPartial" model="Model.Role" />
+            </div>
+
+        </div>

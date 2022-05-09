@@ -1,0 +1,105 @@
+﻿@page
+@model             DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+<div class="card mx-5">
+    <h5 class="card-header bg-warning">
+        <img src="~/icon/info.svg" class="mb-1" style="width:1.2rem;" />
+        @ViewData["Title"]
+    </h5>
+
+    <div class="card-body">
+        <div class="container">
+
+            <div class="row">
+                <div class="col-sm-6 container">
+                    <dl class="row">
+                        <dt class="col-lg-3">
+                            ID
+                        </dt>
+                        <dd class="col-lg-9">
+                            @Html.DisplayFor(model => model.BranchOffice.BranchOfficeId)
+                        </dd>
+                        <dt class="col-lg-3">
+                            @Html.DisplayNameFor(model => model.BranchOffice.Name)
+                        </dt>
+                        <dd class="col-lg-9 text-break">
+                            @Html.DisplayFor(model => model.BranchOffice.Name)
+                        </dd>
+                        @if (Model.BranchOffice.Manager != null)
+                        {
+                            <dt class="col-lg-3">
+                                @Html.DisplayNameFor(model => model.BranchOffice.Manager)
+                            </dt>
+                            <dd class="col-lg-9 text-break">
+                                <div>
+                                    @Model.BranchOffice.Manager.Name&nbsp;@Model.BranchOffice.Manager.Lastname&nbsp;
+
+                                    @if ((await AuthorizationService.AuthorizeAsync(User, Permissions.ReadUsers.ToString())).Succeeded)
+                                    {
+                                        <a href="../User/Details?id=@Model.BranchOffice.Manager.UserId">
+                                            <img src="~/icon/external-link-symbol.svg" class="mb-1" style="width:.9rem;" />
+                                        </a>
+                                    }
+
+                                    @if (!Model.BranchOffice.Manager.Active)
+                                    {<small class="text-muted">(Removed)</small>}
+                                </div>
+                            </dd>
+
+                        }
+
+                        @if ((await AuthorizationService.AuthorizeAsync(User, Permissions.DeactivateBranchOffices.ToString())).Succeeded)
+                        {
+                            <dt class="col-lg-3">
+                                @Html.DisplayNameFor(model => model.BranchOffice.Active)
+                            </dt>
+                            <dd class="col-lg-9 text-break">
+                                @Html.DisplayFor(model => model.BranchOffice.Active)
+                            </dd>
+
+                        }
+                    </dl>
+
+                </div>
+
+                <div class="col-sm-6">
+                    @if (Model.BranchOffice.Departments.Any())
+                    {
+                        <dl>
+                            <dt class="ml-3">
+                                @Html.DisplayNameFor(model => model.BranchOffice.Departments)
+                            </dt>
+                            <dd>
+                                <div style="max-height:18rem;" class=" container overflow-auto customScroll1 my-2">
+                                    @foreach (var item in Model.BranchOffice.Departments)
+                                    {
+                                    <div>
+                                        <img src="~/icon/pin.svg" class="mb-1" style="width:1rem;" />&nbsp;@item.Name
+                                        @if (!item.Active)
+                                        {<small class="text-muted">(Removed)</small>}
+                                    </div>
+                                    }
+                                </div>
+                            </dd>
+                        </dl>
+
+                    }
+                </div>
+            </div>
+            <div class="row mt-5">
+                <div class="col-sm">
+                    <div class="form-group">
+                        @if ((await AuthorizationService.AuthorizeAsync(User, Permissions.WriteBranchOffices.ToString())).Succeeded)
+                        {
+                            <a asp-page="./Edit" asp-route-id="@Model.BranchOffice.BranchOfficeId" class="btn btn-primary">Edit</a>
+                        }
+                        <a asp-page="Index" class="btn btn-secondary">Go back</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

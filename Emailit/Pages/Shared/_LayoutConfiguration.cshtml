@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=480, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Emailit</title>
+    <partial name="ResourcesPartialViews/_CssImportsPartial" />
+</head>
+<body class="min-vh-100 bg-inbox bg-secondary">
+    @*style="background-color:#F0F0F0;"*@
+    <wrapper class="d-flex flex-column min-vh-100">
+        <header>
+            <nav class="navbar navbar-dark navbar-expand-lg navbar mb-4" style="background-color: #002647">
+                <div class="container">
+                    <a class="navbar-brand pb-2 mb-1" asp-page="/Index">
+                        <img src="~/icon/back.svg" class="mb-1 white-filter mr-2" style="width:1.4rem;" />
+                        Go back
+                    </a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="navbar-collapse collapse" id="navbar">
+                        <ul class="navbar-nav flex-grow-1 mb-1">
+                            @{String pageRoute = ViewContext.RouteData.Values["page"].ToString();
+                                bool CanReadUsers = (await AuthorizationService.AuthorizeAsync(User, Permissions.ReadUsers.ToString())).Succeeded;
+                                bool CanReadRoles = (await AuthorizationService.AuthorizeAsync(User, Permissions.ReadRoles.ToString())).Succeeded;
+                                bool CanReadJobs = (await AuthorizationService.AuthorizeAsync(User, Permissions.ReadJobs.ToString())).Succeeded;
+                                bool CanReadDepartments = (await AuthorizationService.AuthorizeAsync(User, Permissions.ReadDepartments.ToString())).Succeeded;
+                                bool CanReadOffices = (await AuthorizationService.AuthorizeAsync(User, Permissions.ReadBranchOffices.ToString())).Succeeded; }
+         
+                            @if (CanReadUsers || CanReadRoles || CanReadJobs
+                              || CanReadOffices || CanReadDepartments)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-white @(pageRoute.Contains("/Account/Manage/") ? "active-nav" : "" )" asp-page="/Account/Manage/Index">
+                                        Settings
+                                    </a>
+                                </li>
+
+                                @if (CanReadUsers)
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link text-white @(pageRoute.Contains("/Admin/User/") ? "active-nav" : "" )" asp-page="/Admin/User/Index">Users</a>
+                                    </li>
+                                }
+                                @if (CanReadRoles)
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link text-white @(pageRoute.Contains("/Admin/Role/") ? "active-nav" : "" )" asp-page="/Admin/Role/Index">Roles</a>
+                                    </li>
+                                }
+                                @if (CanReadJobs)
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link text-white @(pageRoute.Contains("/Admin/Job/") ? "active-nav" : "" )" asp-page="/Admin/Job/Index">Jobs</a>
+                                    </li>
+                                }
+                                @if (CanReadDepartments)
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link text-white @(pageRoute.Contains("/Admin/Department/") ? "active-nav" : "" )" asp-page="/Admin/Department/Index">Departments</a>
+                                    </li>
+                                }
+                                @if (CanReadOffices)
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link text-white @(pageRoute.Contains("/Admin/BranchOffice/") ? "active-nav" : "" )" asp-page="/Admin/BranchOffice/Index">Offices</a>
+                                    </li>
+                                }
+                            }
+
+                            @if (User.Identity.IsAuthenticated)
+                            {
+
+                                <li class="nav-item ml-auto">
+                                    <form class="form-inline" asp-page="/Account/Logout" method="post">
+                                        <button type="submit" class="nav-link text-white btn btn-link">Log out</button>
+                                    </form>
+                                </li>
+
+                            }
+                        </ul>
+
+                    </div>
+                </div>
+            </nav>
+        </header>
+        <main role="main" class="pb-3 container flex-fill ">
+            @RenderBody()
+        </main>
+        <footer class="border-top footer text-muted container my-3" style="border-color:darkgrey!important;">
+            <p class="text-dark">
+                &copy; @DateTime.Now.Year.ToString() - Emailit. All rights reserved. <a asp-area="" asp-page="/Privacy" class="card-link">Privacy</a>
+            </p>
+        </footer>
+    </wrapper>
+    <partial name="ResourcesPartialViews/_ScriptsImportsPartial" />
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

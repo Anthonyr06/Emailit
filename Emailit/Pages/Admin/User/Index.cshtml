@@ -1,0 +1,314 @@
+﻿@page
+@model             IndexModel
+
+@{
+    ViewData["Title"] = "Users";
+}
+
+  <div class="card p-4 container">
+        <h3 class="my-3">
+            <img src="~/icon/usergroup.svg" class="mb-3" style="width:2.4rem;" />
+            @ViewData["Title"] of the application
+        </h3>
+
+        <div class="row mb-2 mt-5">
+            <div class="col-6 mb-2">
+                @if ((await AuthorizationService.AuthorizeAsync(User, Permissions.CreateUsers.ToString())).Succeeded)
+                {
+                <a type="button" class="btn btn-sm btn-success rounded-pill " asp-page="Create">
+                    <img src="~/icon/add-user.svg" class="mb-1 ml-1 white-filter" style="width:1.2rem;" />
+                    &nbsp;New&nbsp;
+                </a>
+                }
+            </div>
+            
+            <div class="col-6 col-md-4 offset-md-2 col-lg-3 offset-lg-3">
+                <form method="get">
+                    <div class="input-group input-group-sm">
+                        <input asp-for="IdCard" type="text" placeholder="Cédula" data-inputmask="'mask': '999-9999999-9'" class="form-control" 
+                               style="border-radius:50rem 0 0 50rem;">
+                        <div class="input-group-append" >
+                            @if (!string.IsNullOrEmpty(Model.IdCard))
+                            {
+                                <a class="btn btn-sm btn-danger" asp-page="./Index">
+                                    <img src="~/icon/close-black.svg" class="white-filter" style="width:1rem;" />
+                                </a>
+                            }
+                            <button class="btn btn-primary btn-sm" type="submit" style="border-radius:0 50rem 50rem 0;">
+                                <img src="~/icon/search.svg" class="white-filter" style="width:1rem;" />
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="table-responsive-lg border mt-2 mb-4" style="border-radius:1rem!important;overflow-y:hidden;min-height:10rem;">
+            <table class="table table-hover table table-sm table-borderless">
+                <thead class="bg-warning">
+                    <tr>
+                        <th class="pl-3">
+                            @Html.DisplayNameFor(model => model.Users[0].IdCard)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Users[0].Name)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Users[0].Lastname)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Users[0].Email)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Users[0].Gender)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Users[0].Job)
+                        </th>
+                        <th>
+                            Department
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Users)
+                    {
+                        <tr>
+                            <td class="pl-2" onclick="window.location='User/Details?id=@item.UserId';" style="cursor: pointer;">
+                                @Html.DisplayFor(modelItem => item.IdCard)
+                                @if (!item.Active)
+                                {
+                                    <img src="~/icon/close-red.svg" style="width:.8rem;" />
+                                }
+                            </td>
+                            <td onclick="window.location='User/Details?id=@item.UserId';" style="cursor: pointer;">
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td onclick="window.location='User/Details?id=@item.UserId';" style="cursor: pointer;">
+                                @Html.DisplayFor(modelItem => item.Lastname)
+                            </td>
+                            <td onclick="window.location='User/Details?id=@item.UserId';" style="cursor: pointer;">
+                                @Html.DisplayFor(modelItem => item.Email)
+                            </td>
+                            <td onclick="window.location='User/Details?id=@item.UserId';" style="cursor: pointer;">
+                                @Html.DisplayFor(modelItem => item.Gender)
+                            </td>
+                            <td onclick="window.location='User/Details?id=@item.UserId';" style="cursor: pointer;">
+                                @Html.DisplayFor(modelItem => item.Job.Name)
+                            </td>
+                            <td onclick="window.location='User/Details?id=@item.UserId';" style="cursor: pointer;">
+                                <center>
+                                    @Html.DisplayFor(modelItem => item.Department.Name)
+                                </center>
+                            </td>
+                            <td>
+
+                                @{
+                                    bool canEdit = (await AuthorizationService.AuthorizeAsync(User, Permissions.UpdateUsers.ToString())).Succeeded;
+                                    bool canDeactivate = (await AuthorizationService.AuthorizeAsync(User, Permissions.DeactivateUsers.ToString())).Succeeded;
+                                }
+
+
+                                @if (canDeactivate || canEdit)
+                                {
+                                    <div class="dropdown">
+                                        <a role="button" id="dropdownMenuLink" data-toggle="dropdown">
+                                            <img src="~/icon/004-more.svg" style="width:1.2rem;transform:rotate(90deg);" />
+                                        </a>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item" asp-page="./Details" asp-route-id="@item.UserId">
+                                                <img src="~/icon/info-1.svg" class="mb-1" style="width:1rem;" />
+                                                Details
+                                            </a>
+                                            @if (canEdit)
+                                            {
+                                                <a class="dropdown-item" asp-page="./Edit" asp-route-id="@item.UserId">
+                                                    <img src="~/icon/edit-1.svg" class="mb-1" style="width:1rem;" />
+                                                    Edit
+                                                </a>
+                                            }
+                                            @if (canDeactivate)
+                                            {
+                                                if (item.Active)
+                                                {
+                                                    <a type="button" href="#" class="dropdown-item" data-toggle="modal" data-target="#DesactivarModal@{@Html.DisplayFor(modelItem => item.UserId)}">
+                                                        <img src="~/icon/remove-user.svg" class="mb-1" style="width:1rem;" />
+                                                        Deactivate
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                        <a type="button" href="#" class="dropdown-item" data-toggle="modal" data-target="#ReactivarModal@{@Html.DisplayFor(modelItem => item.UserId)}">
+                                            <img src="~/icon/turn-off.svg" class="mb-1" style="width:1rem;" />
+                                            Activate
+                                        </a>
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                                @if (canDeactivate)
+                                {
+                                    if (item.Active)
+                                    {
+
+                                        <!-- Modal Desactivar -->
+                                        <div class="modal fade" id="DesactivarModal@{@Html.DisplayFor(modelItem => item.UserId)}" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">
+                                                            <img src="~/icon/remove-user.svg" class="mb-2" style="width:2rem;" />
+                                                            &nbsp;Deactivate user
+                                                        </h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <h6>&iquest;Are you sure you want to disable the user?</h6>
+                                                        <div class="mt-4">
+                                                            <dl class="row"style="font-size:.9rem;">
+                                                                <dt class="col-sm-4">
+                                                                    @Html.DisplayNameFor(modelItem => item.IdCard)
+                                                                </dt>
+                                                                <dd class="col-sm-8">
+                                                                    @Html.DisplayFor(modelItem => item.IdCard)
+                                                                </dd>
+
+                                                                <dt class="col-sm-4">
+                                                                    @Html.DisplayNameFor(modelItem => item.Name)
+                                                                </dt>
+                                                                <dd class="col-sm-8">
+                                                                    @item.Name
+                                                                    @item.Lastname
+                                                                </dd>
+                                                                <dt class="col-sm-4">
+                                                                    @Html.DisplayNameFor(modelItem => item.Email)
+                                                                </dt>
+                                                                <dd class="col-sm-8">
+                                                                    @Html.DisplayFor(modelItem => item.Email)
+                                                                </dd>
+                                                                <dt class="col-sm-4">
+                                                                    @Html.DisplayNameFor(modelItem => item.Job)
+                                                                </dt>
+                                                                <dd class="col-sm-8">
+                                                                    @Html.DisplayFor(modelItem => item.Job.Name)
+                                                                </dd>
+                                                                <dt class="col-sm-4">
+                                                                    Department
+                                                                </dt>
+                                                                <dd class="col-sm-8">
+                                                                    @Html.DisplayFor(modelItem => item.Department.Name)
+                                                                </dd>
+                                                            </dl>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-sm btn-secondary " data-dismiss="modal">Cancel</button>
+                                                            <form asp-page="./Deactivate" asp-route-id="@item.UserId" method="post">
+                                                                <button type="submit" name="button" class="btn btn-sm btn-danger">Deactivate</button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <!-- Modal Reactivar -->
+                                        <div class="modal fade" id="ReactivarModal@{@Html.DisplayFor(modelItem => item.UserId)}" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">
+                                                            <img src="~/icon/turn-off.svg" class="mb-2" style="width:1.5rem;" />
+                                                            Activate
+                                                        </h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <h6>&iquest;Are you sure you want to activate the user?</h6>
+                                                        <div class="mt-4">
+                                                            <dl class="row" style="font-size:.9rem;">
+                                                                <dt class="col-sm-4" >
+                                                                    @Html.DisplayNameFor(modelItem => item.IdCard)
+                                                                </dt>
+                                                                <dd class="col-sm-8">
+                                                                    @Html.DisplayFor(modelItem => item.IdCard)
+                                                                </dd>
+
+                                                                <dt class="col-sm-4">
+                                                                    @Html.DisplayNameFor(modelItem => item.Name)
+                                                                </dt>
+                                                                <dd class="col-sm-8">
+                                                                    @item.Name
+                                                                    @item.Lastname
+                                                                </dd>
+                                                                <dt class="col-sm-4">
+                                                                    @Html.DisplayNameFor(modelItem => item.Email)
+                                                                </dt>
+                                                                <dd class="col-sm-8">
+                                                                    @Html.DisplayFor(modelItem => item.Email)
+                                                                </dd>
+                                                                <dt class="col-sm-4">
+                                                                    @Html.DisplayNameFor(modelItem => item.Job)
+                                                                </dt>
+                                                                <dd class="col-sm-8">
+                                                                    @Html.DisplayFor(modelItem => item.Job.Name)
+                                                                </dd>
+                                                                <dt class="col-sm-4">
+                                                                    Department
+                                                                </dt>
+                                                                <dd class="col-sm-8">
+                                                                    @Html.DisplayFor(modelItem => item.Department.Name)
+                                                                </dd>
+                                                            </dl>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cancel</button>
+                                                            <form asp-page="./Reactivate" asp-route-id="@item.UserId" method="post">
+                                                                <button type="submit" name="button" class="btn btn-sm btn-warning">Activate</button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+
+                            </td>
+                        </tr>
+
+                    }
+                </tbody>
+            </table>
+
+        </div>
+        <div>
+            <partial name="_PaginationPartial" model="Model.Users" />
+        </div>
+
+
+
+
+    </div>
+
+@section Scripts {
+    <partial name="ResourcesPartialViews/_ValidationScriptsPartial" />
+<script>
+    var settings = {
+        validClass: "",
+        errorClass: ""
+    };
+    $.validator.setDefaults(settings);
+    $.validator.unobtrusive.options = settings;
+</script>
+}
+
+
+

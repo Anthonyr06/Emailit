@@ -1,0 +1,156 @@
+﻿@page
+@model             DetailsModel
+
+@{
+    ViewData["Title"] = Html.DisplayFor(model => model.UserData.Name);
+}
+
+
+
+<div class="card mx-5">
+    <h5 class="card-header bg-warning">
+        <img src="~/icon/info.svg" class="mb-1" style="width:1.2rem;" />
+        Details
+    </h5>
+
+    <div class="card-body">
+        <div class="container">
+
+            <div class="row">
+                <div class="col-lg-7 ml-3">
+                    <dl class="row mb-0">
+
+                        <dt class="col-lg-4">
+                            @Html.DisplayNameFor(model => model.UserData.IdCard)
+                        </dt>
+                        <dd class="col-lg-8">
+                            @Html.DisplayFor(model => model.UserData.IdCard)
+                        </dd>
+                        <dt class="col-lg-4">
+                            @Html.DisplayNameFor(model => model.UserData.Name)
+                        </dt>
+                        <dd class="col-lg-8 text-break">
+                            @Html.DisplayFor(model => model.UserData.Name)
+                        </dd>
+                        <dt class="col-lg-4">
+                            @Html.DisplayNameFor(model => model.UserData.Lastname)
+                        </dt>
+                        <dd class="col-lg-8 text-break">
+                            @Html.DisplayFor(model => model.UserData.Lastname)
+                        </dd>
+                        <dt class="col-lg-4">
+                            @Html.DisplayNameFor(model => model.UserData.Email)
+                        </dt>
+                        <dd class="col-lg-8 text-break">
+                            @Html.DisplayFor(model => model.UserData.Email)
+                        </dd>
+                        <dt class="col-lg-4">
+                            @Html.DisplayNameFor(model => model.UserData.Gender)
+                        </dt>
+                        <dd class="col-lg-8">
+                            @Html.DisplayFor(model => model.UserData.Gender)
+                        </dd>
+                        @if (Model.UserData.Job != null)
+                        {
+                            <dt class="col-lg-4">
+                                @Html.DisplayNameFor(model => model.UserData.Job)
+                            </dt>
+                            <dd class="col-lg-8">
+                                @Html.DisplayFor(model => model.UserData.Job.Name)
+                                @if (!Model.UserData.Job.Active)
+                                {<small class="text-muted">(Removed)</small>}
+                            </dd>
+                            
+                        }
+                        @if (Model.UserData.Job != null)
+                        {
+                            <dt class="col-lg-4">
+                                Department
+                            </dt>
+                            <dd class="col-lg-8">
+                                @Html.DisplayFor(model => model.UserData.Department.Name)
+                                @if (!Model.UserData.Department.Active)
+                                {<small class="text-muted">(Removed)</small>}
+                            </dd>
+                        }
+                        @if (Model.Roles.Any())
+                        {
+                            <dt class="col-lg-4">
+                                @Html.DisplayNameFor(model => model.Roles)
+                            </dt>
+                            <dd class="col-lg-8 text-break">
+                                @{ var cont = 0;}
+                                @foreach (var item in Model.Roles)
+                                {
+                                    cont++;
+
+                                    @item
+
+                                    @if (cont < Model.Roles.Count)
+                                    {
+                                        <text>,&nbsp;</text>
+                                    }
+                                }
+                            </dd>
+                        }
+                        @if ((await AuthorizationService.AuthorizeAsync(User, Permissions.DeactivateUsers.ToString())).Succeeded)
+                        {
+                            <dt class="col-lg-4">
+                                @Html.DisplayNameFor(model => model.UserData.Active)
+
+                            </dt>
+                            <dd class="col-lg-8">
+                                @Html.DisplayFor(model => model.UserData.Active)
+                            </dd>
+
+                        }
+                        
+                            <dt class="col-lg-4">
+                                @Html.DisplayNameFor(model => model.Blocked)
+
+                            </dt>
+                            <dd class="col-lg-8">
+                                @Html.DisplayFor(model => model.Blocked)
+                            </dd>
+                    </dl>
+
+                    </div>
+
+                @if (Model.PermissionsList.Any())
+                {
+                    <div class="col-lg">
+                        <dl>
+                            <dt class="ml-3">
+                                @Html.DisplayNameFor(model => model.PermissionsList)
+                            </dt>
+                            <dd>
+                                <div style="max-height:18rem;" class=" container overflow-auto customScroll1 my-2">
+                                    @foreach (var item in Model.PermissionsList)
+                                    {
+                                        <div>
+                                            <img src="~/icon/check-green.svg" class="mb-1" style="width:1rem;" />
+                                            &nbsp;@item
+                                        </div>
+                                    }
+                                </div>
+                            </dd>
+                        </dl>
+                    </div>
+                }
+                </div>
+
+            <div class="row mt-5">
+                <div class="col-sm">
+                    <div class="form-group">
+                        @if ((await AuthorizationService.AuthorizeAsync(User, Permissions.UpdateUsers.ToString())).Succeeded)
+                        {
+                            <a asp-page="./Edit" asp-route-id="@Model.UserData.UserId" class="btn btn-primary">Edit</a>
+                        }
+                        <a asp-page="Index" class="btn btn-secondary">Go back</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

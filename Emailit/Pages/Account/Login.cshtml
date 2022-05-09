@@ -1,0 +1,107 @@
+﻿@page
+@model             LoginModel
+@{
+    ViewData["Title"] = "Iniciar Sesión";
+
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=40rem, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <partial name="ResourcesPartialViews/_CssImportsPartial" />
+</head>
+<body class="container min-vh-100 login-bg" style="min-width: 40rem;">
+    <wrapper class="d-flex flex-column min-vh-100">
+        <main role="main" class="pb-3 container flex-fill">
+            <div class="card w-75 mx-auto mt-5 border-0" style="min-width: 35rem;">
+                <div class="card-body text-center p-0">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col p-0 d-none d-sm-block">
+
+                                <div class="carousel slide h-100" data-ride="carousel">
+                                    <div class="carousel-inner h-100">
+                                        <div class="carousel-item carousel-item-login active h-100">
+                                            <img src="~/Img/img-login-1.jpg"
+                                                 class="d-block w-100 h-100" />
+                                        </div>
+                                       
+                                        <div class="carousel-item carousel-item-login h-100">
+                                            <img src="~/Img/img-login-3.jpg"
+                                                 class="d-block w-100 h-100" />
+                                        </div>
+                                        <div class="carousel-item carousel-item-login h-100">
+                                            <img src="~/Img/img-login-4.jpg"
+                                                 class="d-block w-100 h-100" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col p-4">
+                                <form method="post">
+                                    <h4 class="card-title">
+                                        @{
+                                            if (DateTime.Now.Hour < 12)
+                                            {
+                                                <text>Good morning!
+                                                    <img src="~/icon/sun.svg" class="mb-1" style="width:2rem;" /></text>
+                                            }
+                                            else if (DateTime.Now.Hour < 19)
+                                            {
+                                                <text>Good afternoon!
+                                                    <img src="~/icon/sunny.svg" style="width:1.9rem;" /></text>
+                                            }
+                                            else
+                                            {
+                                                <text>Good evening!
+                                                    <img src="~/icon/night.svg" style="width:2rem;" /></text>
+                                            }
+                                        }
+                                    </h4>
+                                    <hr />
+
+                                    <partial name="_ModelStatusMessage" model="Model" />
+
+                                    <div class="form-group pt-2">
+                                        <label asp-for="Email" class="font-weight-bold"></label>
+                                        <input asp-for="Email" class="form-control" />
+                                        <span asp-validation-for="Email" class="invalid-feedback"></span>
+                                    </div>
+                                    <div class="form-group pt-2">
+                                        <label asp-for="Password" class="font-weight-bold"></label>
+                                        <input asp-for="Password" class="form-control" />
+                                        <span asp-validation-for="Password" class="invalid-feedback"></span>
+                                    </div>
+                                    <div class="form-group pt-2">
+                                        <a asp-page="./ForgotPassword" class="text-muted small">Forgot your password?</a>
+                                    </div>
+                                    <div class="form-group pt-2">
+                                        <button type="submit" class="btn btn-warning rounded-pill w-50">Log in</button>
+                                    </div>
+
+                                </form>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer class="border-top footer text-muted container my-3">
+            <p class="text-white-50">
+                &copy; @DateTime.Now.Year.ToString() - Emailit. All rights reserved. <a asp-area="" asp-page="/Privacy" class="card-link">Privacy</a>
+            </p>
+        </footer>
+
+    </wrapper>
+        <partial name="ResourcesPartialViews/_ScriptsImportsPartial" />
+        <partial name="ResourcesPartialViews/_ValidationScriptsPartial" />
+</body>
+</html>

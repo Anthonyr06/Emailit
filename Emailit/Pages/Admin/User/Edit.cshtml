@@ -1,0 +1,226 @@
+﻿@page
+@model             EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<div class="card mx-5">
+    <h5 class="card-header bg-warning">
+        <img src="~/icon/edit-user.svg" style="width:1.6rem;" />
+        @ViewData["Title"]
+    </h5>
+    <div class="card-body">
+        <partial name="_ModelStatusMessage" model="Model" />
+        <form class="container" id="formCU" method="post">
+            <div class="row">
+                <div class="col-lg">
+
+                    <div class="form-row">
+                        <div class="col-lg">
+                            <div class="form-group">
+                                <label asp-for="IdCard" class="control-label font-weight-bold"></label>
+                                <input asp-for="IdCard" class="form-control" data-inputmask="'mask': '999-9999999-9'" />
+                                <span asp-validation-for="IdCard" class="invalid-feedback"></span>
+                            </div>
+
+                        </div>
+                        <div class="col-lg">
+                            <div class="form-group">
+                                <label asp-for="Name" class="control-label font-weight-bold"></label>
+                                <input asp-for="Name" class="form-control" />
+                                <span asp-validation-for="Name" class="invalid-feedback"></span>
+                            </div>
+
+                        </div>
+                        <div class="col-lg">
+                            <div class="form-group">
+                                <label asp-for="Lastname" class="control-label font-weight-bold"></label>
+                                <input asp-for="Lastname" class="form-control" />
+                                <span asp-validation-for="Lastname" class="invalid-feedback"></span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label asp-for="Email" class="control-label font-weight-bold"></label>
+                                <input asp-for="Email" class="form-control" />
+                                <span asp-validation-for="Email" class="invalid-feedback"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="col-lg">
+                            <div class="form-group">
+                                <div class="mb-1">
+                                    <label asp-for="Gender" class="control-label font-weight-bold"></label>
+                                </div>
+                                @foreach (var item in Enum.GetValues(typeof(Gender)))
+                                {
+                                    var genderName = item.GetType()
+                                    .GetMember(item.ToString())
+                                    .First()
+                                    .GetCustomAttribute<DisplayAttribute>()
+                                    .GetName();
+
+                                    var genderId = "G-" + (int)item;
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        @Html.RadioButtonFor(m => m.Gender, item, new { @class = "custom-control-input", id = genderId })
+                                        @Html.LabelFor(m => m.Gender, genderName, new { @class = "custom-control-label", @for = genderId })
+
+                                    </div>
+                                }
+                                <div class="mt-2">
+                                    <span asp-validation-for="Gender" class="text-danger small"></span>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-lg">
+
+                            <div class="form-group">
+                                <label asp-for="JobId" class="control-label font-weight-bold"></label>
+                                <select asp-for="JobId" class="form-control custom-select" asp-items="Model.JobList">
+                                    <option selected="selected" value="">-Choose a job-</option>
+                                </select>
+                                <span asp-validation-for="JobId" class="invalid-feedback"></span>
+                            </div>
+
+                        </div>
+                        <div class="col-lg">
+                            <div class="form-group">
+                                <label asp-for="DepartmentId" class="control-label font-weight-bold"></label>
+                                <select asp-for="DepartmentId" class="form-control custom-select" asp-items="Model.DeparmentsList">
+                                    <option selected="selected" value="">-Choose a department-</option>
+                                </select>
+                                <span asp-validation-for="DepartmentId" class="invalid-feedback"></span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        @if ((await AuthorizationService.AuthorizeAsync(User, Permissions.DeactivateUsers.ToString())).Succeeded)
+	{
+                        <div class="col-md-4">
+                            <div class="form-group mt-3">
+                                <div class="custom-control custom-switch">
+                                    <input asp-for="Active" type="checkbox" class="custom-control-input" id="UserActiveChk" />
+                                    <label asp-for="Active" class="custom-control-label" for="UserActiveChk"></label>
+                                </div>
+                            </div>
+                        </div>
+	}
+                        
+                        <div class="col-md-4">
+                            <div class="form-group mt-3">
+                                <div class="custom-control custom-switch">
+                                    <input asp-for="MustChangePassword" type="checkbox" class="custom-control-input" id="MustChangePwdChk" />
+                                    <label asp-for="MustChangePassword" class="custom-control-label" for="MustChangePwdChk"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mt-3">
+                                <div class="custom-control custom-switch">
+                                    <input asp-for="Blocked" type="checkbox" class="custom-control-input" id="UserLockedChk" />
+                                    <label asp-for="Blocked" class="custom-control-label" for="UserLockedChk"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if ((await AuthorizationService.AuthorizeAsync(User, Permissions.WriteUsersPermissions.ToString())).Succeeded)
+                    {
+                        <div class="form-row">
+
+                            <div class="form-group">
+
+                                <div class="btn-group dropright">
+                                    <button type="button" class="btn btn-outline-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                       Extra permissions <small>(Optional)</small>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-no-close overflow-auto customScroll1" style="max-height:11rem;">
+                                        @foreach (Permissions item in Enum.GetValues(typeof(Permissions)))
+                                        {
+                                            var permissionName = item.GetType()
+                                                                   .GetMember(item.ToString())
+                                                                   .First()
+                                                                   .GetCustomAttribute<DisplayAttribute>()
+                                                                   .GetName();
+
+                                            var Permission = (ulong)item;
+
+                                            <div class="form-group px-2">
+
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" name="@nameof(Model.PermissionsList)" id="P-@Permission" value="@Permission" class="custom-control-input"
+                                                           @if (Model.PermissionsList != null && Model.PermissionsList.Contains(Permission)) { <text> checked </text> } />
+                                                    <label class="custom-control-label small" for="P-@Permission">@permissionName</label>
+                                                </div>
+
+                                            </div>
+                                        }
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    }
+
+                </div>
+
+                @if ((await AuthorizationService.AuthorizeAsync(User, Permissions.WriteUsersRoles.ToString())).Succeeded)
+                {
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label asp-for="RolesIdsSelected" class="control-label font-weight-bold ml-2"></label>&nbsp;<small>(Optional)</small>
+                            <div class="container overflow-auto customScroll1 my-2" style="max-height:16rem;">
+                                @foreach (Role item in Model.RolesList)
+                                {
+                                    bool IsChecked = Model.RolesIdsSelected != null && Model.RolesIdsSelected.Contains(item.RoleId);
+
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input"
+                                               id="role-@item.RoleId"
+                                               name="@nameof(Model.RolesIdsSelected)"
+                                               value="@item.RoleId"
+                                               @if (IsChecked) { <text> checked </text> } />
+
+                                        <label class="custom-control-label" for="role-@item.RoleId">
+                                            @item.Name
+                                        </label>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+
+            <div class="row mt-5">
+                <div class="col">
+                    <div class="form-group">
+                        <input type="submit" id="submitBtn" value="Edit" class="btn btn-primary" />
+                        <a asp-page="Index" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </div>
+            </div>
+
+
+        </form>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="ResourcesPartialViews/_ValidationScriptsPartial" />
+}

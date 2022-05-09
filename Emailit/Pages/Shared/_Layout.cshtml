@@ -1,0 +1,259 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=800, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Emailit</title>
+    <partial name="ResourcesPartialViews/_CssImportsPartial" />
+    <environment include="Development">
+        <link href="~/lib/summernote/summernote-bs4.min.css" rel="stylesheet" />
+    </environment>
+    <environment exclude="Development">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-bs4.min.css" 
+              rel="stylesheet" 
+              asp-fallback-href="~/lib/summernote/summernote-bs4.min.css"
+              integrity="sha512-pDpLmYKym2pnF0DNYDKxRnOk1wkM9fISpSOjt8kWFKQeDmBTjSnBZhTd41tXwh8+bRMoSaFsRnznZUiH9i3pxA==" 
+              crossorigin="anonymous" />
+    </environment>
+</head>
+<body class="min-vh-100 bg-inbox">
+	<wrapper class="d-flex flex-column min-vh-100">
+		<header>
+			<nav class="navbar navbar-expand navbar mb-4 py-2" style="background-color:#002647;">
+				<div class="container-fluid px-3">
+					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
+						<span class="navbar-toggler-icon"></span>
+					</button>
+					<div class="navbar-collapse collapse" id="navbar">
+						<ul class="navbar-nav flex-grow-1">
+
+							<li class="nav-item ml-2">
+								<button type="button" id="newMessageBtn" class="btn btn-sm btn-warning rounded-pill px-3" data-toggle="modal" data-target="#NuevoOficioModal">
+									<img src="~/icon/newMessageBtn.svg" style="width:1.9rem;">
+									New message
+								</button>
+							</li>
+
+							<li class="nav-item ml-auto d-flex align-items-center">
+
+								<div class="dropdown">
+									<a role="button" data-toggle="dropdown">
+										<img src="~/icon/settings-3.svg" class="warningbootstrap-filter spinner" style="width:1.8rem;" />
+									</a>
+									<div class="dropdown-menu dropdown-menu-right mt-2">
+										<a class="dropdown-item" asp-page="/Account/Manage/Index">
+											<img src="~/icon/settings.svg" class="mr-1" style="width:1rem;" />
+											Settings
+										</a>
+										<form class="form-inline" asp-page="/Account/Logout" method="post">
+											<button type="submit" class="dropdown-item">
+												<img src="~/icon/logout.svg" class="mr-0" style="width:1.2rem;" />
+												Log out
+											</button>
+										</form>
+									</div>
+								</div>
+
+							</li>
+						</ul>
+
+					</div>
+				</div>
+			</nav>
+
+		</header>
+
+        <main role="main" class="pb-3 container-fluid flex-fill">
+
+            @RenderBody()
+
+            @*new message modal*@
+            <div class="modal fade" id="NuevoOficioModal" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" style="max-width:90%">
+                    <div class="modal-content" style="border-radius:1rem;">
+                        @*<form method="post">*@
+                        <div class="modal-header py-2">
+                            <h5 class="modal-title">
+                                <img src="~/icon/plus.svg" class="mb-1 successbootstrap-filter" style="width:1.4rem;" />
+                                New message
+                            </h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+
+                            <div class="alert alert-warning alert-dismissible fade show animate__animated animate__flash" id="newMessageModal" role="alert" style="display:none;">
+                                <strong>Hi @User.Identity.Name!</strong> <span id="newMessageModalTxt"></span>
+                                <button type="button" class="close" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+
+                            <div class="row mt-1 mb-2">
+
+                                <div class="col-lg-2 col-sm-3">
+
+                                    <button type="button" id="sendMsg" class="btn btn-lg border bg-white py-0 w-100" style="height:70%;border-radius:1rem;">
+                                        <img src="~/icon/send.svg" style="max-width:3.5rem;" /><br />Send
+                                    </button>
+
+                                    <div class="row">
+                                        <div class="col p-0 offset-2">
+                                            <img class="mt-n1" src="~/icon/chains.svg" style="max-width:1.2rem;transform:rotate(45deg);" />
+                                        </div>
+                                        <div class="col p-0 offset-2">
+                                            <img class="mt-n1 ml-2" src="~/icon/chains.svg" style="max-width:1.2rem;transform:rotate(45deg);" />
+                                        </div>
+                                    </div>
+
+                                    <button type="button" class="btn border bg-white py-0 w-100 rounded-pill text-nowrap"
+                                            style="font-size:.8rem;height:20%" data-toggle="modal" data-target="#attachFileToMessageModal">
+                                        <img src="~/icon/attachBtn.svg" style="max-width:.9rem;" />Attach files
+                                        <span id="newMessageAttachmentsBadge" class="badge badge-pill badge-secondary ml-1" style="display:none;"></span>
+                                    </button>
+
+                                </div>
+
+                                <div class="col">
+
+                                    <div class="input-group mb-2">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" style="min-width:76.02px">To</span>
+                                        </div>
+                                        <input id="recipientsTxtInput" />
+
+                                    </div>
+
+                                    <div class="input-group mb-2">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" style="min-width:76.02px">CC</span>
+                                        </div>
+                                        <div id="ccRecipientsTxtInput"></div>
+                                    </div>
+
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" style="min-width:76.02px">Subject</span>
+                                        </div>
+                                        <input type="text" id="MessageTittleTxtInput" class="form-control" placeholder="Write a Subject (mandatory)" autocomplete="off">
+                                    </div>
+                                    <hr />
+                                    <div class="mt-2">
+                                        <div class="row">
+
+                                            <div class="col-sm-6 col-lg-3">
+
+                                                <div class="input-group input-group-sm">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">Priority</span>
+                                                    </div>
+                                                    <select id="prioritySelectList" class="custom-select custom-select-sm" asp-items="Html.GetEnumSelectList<MessagePriority>()"></select>
+                                                </div>
+
+                                            </div>
+                                            <div class="col d-inline-flex">
+
+
+                                                <div class="mt-1" data-toggle="tooltip" data-placement="bottom" data-html="true"
+                                                     title="Confidential Message">
+                                                    <div class="custom-control custom-switch">
+                                                        <input type="checkbox" class="custom-control-input" id="confidentialCheck">
+                                                        <label class="custom-control-label" for="confidentialCheck">
+
+                                                            <img src="~/icon/confidential.svg" id="ConfidencialChkImg" class="textmutedbootstrap-filter mb-1" style="width:1.5rem;" />
+
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col mt-2">
+                                    <textarea id="summernote" name="editordata"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        @*</form>*@
+
+                    </div>
+
+                </div>
+            </div>
+
+            @*Modal attach file to message*@
+            <div class="modal fade" id="attachFileToMessageModal" tabindex="-1">
+                <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title d-inline-flex">
+                                <img src="~/icon/attachBtn.svg" style="max-width:1.38rem;" />
+                                        <p style="min-width: fit-content;" class="mx-1 my-0">Attach files</p>
+                                <img id="infoIconAdjuntarMensaje" class="primarybootstrap-filter ml-1 mt-2" data-toggle="tooltip" data-placement="right" 
+                                     title="Max @MessageDataValidation.maxSizePerFileInMB MB per file" src="~/icon/info-1.svg" style="max-width:.8rem;"/>
+                            </h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body row" id="file-upload-msg-box" style="min-height: 150px;">
+                            <p class="ml-3">No selected file.</p>
+                        </div>
+                        <div class="modal-footer justify-content-between py-1">
+                            <label for="file-upload-msg" class="bg-success border custom-file-upload px-2 py-1 rounded-pill text-white"
+                                   style="cursor:pointer;">
+                                <img class="mr-1 mb-1" src="~/icon/folder-attach.svg" style="max-width:1.8rem;" />
+                                Attach file
+                            </label>
+                            <input type="file" id="file-upload-msg" class="form-control-file" style="position:absolute;left:-99999rem;" multiple>
+							<span class="small text-muted">Maximum @MessageDataValidation.maxFiles files</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="newMessageLoadingLogo" class="modal-backdrop fade show" style="z-index:9998;display:none">
+                <div class="d-flex justify-content-center vh-100">
+                    <div class="spinner-border text-light align-self-center" style="width: 6rem; height: 6rem;" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+		<footer class="border-top footer text-muted container my-3">
+			<p class="text-black-50">
+				&copy; @DateTime.Now.Year.ToString() - Emailit. All rights reserved. <a asp-area="" asp-page="/Privacy" class="card-link">Privacy</a>
+			</p>
+		</footer>
+
+	</wrapper>
+	<partial name="ResourcesPartialViews/_ScriptsImportsPartial" />
+	@*<partial name="ResourcesPartialViews/_ValidationScriptsPartial" />*@
+<environment include="Development">
+    <script src="~/lib/summernote/summernote-bs4.min.js"></script>
+    <script src="~/js/inbox.js" asp-append-version="true"></script>
+    <script src="~/js/sendMsg.js" asp-append-version="true"></script>
+</environment>
+<environment exclude="Development">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-bs4.min.js"
+            asp-fallback-src="~/lib/summernote/summernote-bs4.min.js"
+            integrity="sha512-+cXPhsJzyjNGFm5zE+KPEX4Vr/1AbqCUuzAS8Cy5AfLEWm9+UI9OySleqLiSQOQ5Oa2UrzaeAOijhvV/M4apyQ=="
+            crossorigin="anonymous">
+    </script>
+    <script src="~/js/inbox.min.js" asp-append-version="true"></script>
+    <script src="~/js/sendMsg.min.js" asp-append-version="true"></script>
+</environment>
+	<script>
+	</script>
+
+	@RenderSection("Scripts", required: false)
+</body>
+</html>

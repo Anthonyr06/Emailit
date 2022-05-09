@@ -1,0 +1,97 @@
+﻿@page
+@model             DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+<div class="card mx-5">
+    <h5 class="card-header bg-warning">
+        <img src="~/icon/info.svg" class="mb-1" style="width:1.2rem;" />
+        @ViewData["Title"]
+    </h5>
+
+    <div class="card-body">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6">
+                    <dl class="row">
+                        <dt class="col-lg-3">
+                            ID
+                        </dt>
+                        <dd class="col-lg-9">
+                            @Html.DisplayFor(model => model.Department.DepartmentId)
+                        </dd>
+                        <dt class="col-lg-3">
+                            @Html.DisplayNameFor(model => model.Department.Name)
+                        </dt>
+                        <dd class="col-lg-9 text-break">
+                            @Html.DisplayFor(model => model.Department.Name)
+                        </dd>
+
+                        @if (Model.Department.BranchOffice != null)
+                        {
+                            <dt class="col-lg-3">
+                                Office
+                            </dt>
+                            <dd class="col-lg-9 text-break">
+                                @Html.DisplayFor(model => model.Department.BranchOffice.Name)
+
+                                @if ((await AuthorizationService.AuthorizeAsync(User, Permissions.ReadBranchOffices.ToString())).Succeeded)
+                                {
+                                    <a href="../BranchOffice/Details?id=@Model.Department.BranchOffice.BranchOfficeId">
+                                        <img src="~/icon/external-link-symbol.svg" class="mb-1" style="width:.9rem;" />
+                                    </a>
+
+                                }
+                                @if (!Model.Department.BranchOffice.Active)
+                                {<small class="text-muted">(Removed)</small>}
+                            </dd>
+                        }
+
+                        @if (Model.Department.Manager != null)
+                        {
+                            <dt class="col-lg-3">
+                                Manager
+                            </dt>
+                            <dd class="col-lg-9 text-break">
+
+                                @Model.Department.Manager.Name&nbsp;@Model.Department.Manager.Lastname&nbsp;
+
+                                @if ((await AuthorizationService.AuthorizeAsync(User, Permissions.ReadUsers.ToString())).Succeeded)
+                                {
+                                    <a href="../User/Details?id=@Model.Department.Manager.UserId">
+                                        <img src="~/icon/external-link-symbol.svg" class="mb-1" style="width:.9rem;" />
+                                    </a>
+
+                                }
+                                @if (!Model.Department.Manager.Active)
+                                {<small class="text-muted">(Removed)</small>}
+                            </dd>
+                        }
+                        @if ((await AuthorizationService.AuthorizeAsync(User, Permissions.DeactivateDepartments.ToString())).Succeeded)
+                        {
+                            <dt class="col-lg-3">
+                                @Html.DisplayNameFor(model => model.Department.Active)
+                            </dt>
+                            <dd class="col-lg-9 text-break">
+                                @Html.DisplayFor(model => model.Department.Active)
+                            </dd>
+
+                        }
+                    </dl>
+                </div>
+            </div>
+            <div class="row mt-5">
+                <div class="col-sm">
+                    <div class="form-group">
+                        @if ((await AuthorizationService.AuthorizeAsync(User, Permissions.WriteDepartments.ToString())).Succeeded)
+                        {
+                            <a asp-page="./Edit" asp-route-id="@Model.Department.DepartmentId" class="btn btn-primary">Edit</a>
+                        }
+                        <a asp-page="Index" class="btn btn-secondary">Go back</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

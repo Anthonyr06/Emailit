@@ -1,0 +1,63 @@
+﻿@page
+@model             ReceivedModel
+@{
+	Layout = null;
+}
+
+@if (!Model.Received.Any())
+{
+
+	<div class="mt-5 p-3 text-center" id="emptyInbox">
+		<div class="mx-auto w-75 p-3">
+			<img src="/icon/empty-box.svg" class="mr-2 mb-1" style="width:5rem;" />
+			<p class="text-muted mt-3">There are no messages to show.</p>
+		</div>
+	</div>
+
+}
+@foreach (var item in Model.Received)
+{
+	TimeSpan timeSpan = DateTime.UtcNow - (item.States.Find(e => e.State == MessageState.received) != null ?
+	item.States.Find(e => e.State == MessageState.received).Date : DateTime.UtcNow);
+
+	string date = null;
+	if (timeSpan.TotalHours < 24)
+	{
+		date = Math.Floor(timeSpan.TotalHours) + (timeSpan.TotalHours < 2 ? " hour" : " hours");
+	}
+	else
+	{
+		date = Math.Floor(timeSpan.TotalDays) + (timeSpan.TotalDays < 2 ? " day" : " days");
+	}
+	//if this html is modified please modify the addNewReceivedMsg() method, which is in the inbox.js file
+	<a href="#" id="msg-list-item-@item.MessageId" class="pb-2 list-group-item list-group-item-action custom-right-click msg-list-item animate__animated animate__fadeInUpBig" style="--animate-duration:.7s;">
+		<div class="d-flex w-100 justify-content-between">
+            <h6 class="text-truncate">
+                @if (item.States.Any() && item.States.Any(e => e.State == MessageState.seen))
+                {
+                    <img src="~/icon/mail-opened.svg" class="mb-2" style="width:1rem;" />
+                }
+                else
+                {
+                    <img src="~/icon/mail-closed.svg" class="mb-1" style="width:1rem;" />
+                }
+                @item.Message.Tittle
+                @if (item.Message.AttachedFiles.Any())
+                {
+                   <span><img src="~/icon/attachBtn.svg" class="mb-1" style="width:1rem;" /></span> 
+                }
+            </h6>
+			<small class="text-muted" style="font-size:73%;">@date ago</small>
+		</div>
+		<p class="block-with-text pb-1">
+			@Html.DisplayFor(modelItem => item.Message.Body)
+		</p>
+	</a>
+
+}
+
+
+
+
+
+

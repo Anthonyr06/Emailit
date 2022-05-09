@@ -1,0 +1,24 @@
+﻿<environment include="Development">
+    <link href="~/lib/twitter-bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/lib/animate.css/animate.min.css" rel="stylesheet" />
+    <link href="~/lib/magicsuggest/magicsuggest.min.css" rel="stylesheet" />
+    <link href="~/css/site.css" rel="stylesheet" asp-append-version="true" />
+</environment>
+<environment exclude="Development">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css"
+          asp-fallback-href="~/lib/twitter-bootstrap/css/bootstrap.min.css"
+          asp-fallback-test-class="sr-only"
+          asp-fallback-test-property="position"
+          asp-fallback-test-value="absolute"
+          integrity="sha512-rO2SXEKBSICa/AfyhEK5ZqWFCOok1rcgPYfGOqtX35OyiraBg6Xa4NnBJwXgpIRoXeWjcAmcQniMhp22htDc6g=="
+          crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+          asp-fallback-href="~/lib/animate.css/animate.min.css"
+          integrity="sha512-c42qTSw/wPZ3/5LBzD+Bw5f7bSF2oxou6wEb+I/lqeaKV5FDIfMvvRp772y4jcJLKuGUOpbJMdg/BTl50fJYAw=="
+          crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/magicsuggest/2.1.5/magicsuggest.min.css" 
+          asp-fallback-href="~/lib/magicsuggest/magicsuggest.min.css"
+          integrity="sha512-td0fmcyxtS45VV4p5tJLa3bvRWnaFK7P1r3U6FsUd1LN+FILZtKX0K/k7+b6wBb6aSPBV8upOtE+VScr4wHt7A==" 
+          crossorigin="anonymous" />
+    <link href="~/css/site.min.css" rel="stylesheet" asp-append-version="true" />
+</environment>

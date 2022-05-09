@@ -1,0 +1,237 @@
+﻿@page
+@using System.Security.Claims
+@model             DetailsModel
+
+@{
+    Layout = null;
+}
+<div class="msg-container-border bg-white border p-0 overflow-hidden animate__animated animate__fadeInUp">
+    <input id="IdDetailsMsg" value="@Model.Message.MessageId" hidden/>
+    <div class="customScroll1 overflow-auto p-0" style="max-height:82vh;min-height:30rem;">
+        <a id="close-opened-msg" href="#" class="btn btn-sm btn-outline-danger border-0 m-0 pt-0 pb-1" style="border-radius:0 0 0 20px;position:fixed;right:0;z-index:999">
+            <img id="img-close-opened-msg" src="~/icon/close-black.svg" class="p-0 m-1" style="width:.5rem;" />
+        </a>
+        <div class="p-4">
+            <div class="row mb-3">
+                <div class="col-lg-11 col-md-10">
+                    <p class="font-weight-bold text-break">
+                        @Html.DisplayFor(model => model.Message.Tittle)
+                        @if (Model.Message.Confidential)
+                        {
+                            <span data-toggle="tooltip" data-placement="right" data-html="true"
+                                  title="@Html.DisplayNameFor(model => model.Message.Confidential)">
+                                <img src="~/icon/confidential.svg" style="width:2rem;" />
+                            </span>
+                        }
+                    </p>
+
+                    @{ string priorityColor;
+                        switch (Model.Message.Priority)
+                        {
+                            case MessagePriority.critical:
+                                priorityColor = "text-danger";
+                                break;
+                            case MessagePriority.high:
+                                priorityColor = "text-warning";
+                                break;
+                            case MessagePriority.medium:
+                                priorityColor = "text-info";
+                                break;
+                            default:
+                                priorityColor = "text-muted";
+                                break;
+                        }
+                    }
+                    <small class="@priorityColor">
+                        @Html.DisplayNameFor(model => model.Message.Priority) @Html.DisplayFor(model => model.Message.Priority)
+                    </small>
+                </div>
+                <div class="col">
+                    <div class="dropdown">
+                        <a role="button" class="pl-2" id="dropdownMenuLink" data-toggle="dropdown">
+                            <img src="~/icon/004-more.svg" style="width:1.3rem;transform:rotate(90deg);" />
+                        </a>
+                        <div class="dropdown-menu  dropdown-menu-right mt-2" aria-labelledby="dropdownMenuButton">
+
+                            <button id="btnForwardFromDetailsMsg" class="dropdown-item"  data-toggle="modal" data-target="#NuevoOficioModal">
+                                <img src="~/icon/right-arrow.svg" class="mb-1" style="width:1rem;" />
+                                Forward
+                            </button>
+                            <button class="dropdown-item" data-toggle="modal" id="btnDeleteFromDetailsMsg" data-target="#deleteModal">
+                                <img src="~/icon/delete.svg" class="mb-1" style="width:1rem;" />
+                                Delete
+                            </button>
+                            @if (Model.Message.SenderId.ToString() == User.FindFirstValue(ClaimTypes.NameIdentifier))
+                            {
+                                <button class="dropdown-item" data-toggle="modal" data-target="#infoModal">
+                                    <img src="~/icon/info.svg" class="mb-1" style="width:1rem;" />
+                                    Information
+                                </button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <small class="text-break">
+                        From: @Html.DisplayFor(model => model.Message.Sender.Email)
+                    </small>
+                </div>
+            </div>
+
+            @{var recipients = Model.Message.Recipients.Where(mr => !mr.CC).ToList(); }
+            <div class="row">
+                <div class="col">
+					<small class="text-break">
+						To:
+						@{ var cont = 0;}
+						@foreach (var item in recipients)
+						{
+							cont++;
+
+							@item.User.Email
+
+							@if (cont < recipients.Count)
+							{
+								<text>,&nbsp;</text>
+							}
+						}
+					</small>
+                </div>
+            </div>
+            @{var destinatariosCC = Model.Message.Recipients.Where(mr => mr.CC).ToList(); }
+            @if (destinatariosCC.Any())
+            {
+                <div class="row">
+                    <div class="col">
+                        <small class="text-break">
+                            Cc:
+                            @{cont = 0;}
+                            @foreach (var item in destinatariosCC)
+                            {
+                                cont++;
+
+                                @item.User.Email
+
+                                @if (cont < destinatariosCC.Count)
+                                {
+                                    <text>,&nbsp;</text>
+                                }
+                            }
+                        </small>
+                    </div>
+                </div>
+            }
+            <div class="row">
+                <div class="col">
+                    <small>Date: @Html.DisplayFor(model => model.Message.Date)</small>
+                </div>
+            </div>
+            <div class="row my-5">
+                <div class="col">
+                    <div class="text-break">@Html.Raw(Model.Message.BodyInHtml)</div>
+                </div>
+            </div>
+
+            @if (Model.Message.AttachedFiles.Any())
+            {
+                <div class="row">
+                    <div class="col">
+                        <h6>Attachments</h6>
+                        <div class="d-flex flex-wrap">
+
+                            @foreach (var item in Model.Message.AttachedFiles)
+                            {
+                                var url = @Url.Page("GetFile", new { id = item.FileId});
+
+                                @*If the file is an image, the preview will be the same image*@
+                                var src = item.File.ContentType.Contains("image") ? url : "~/icon/document.svg";
+
+                                <div class="my-2" style="max-width:4rem;">
+                                    <a href="@url">
+                                        <img src="@src" class="file-from-open-msg w-100 animate__animated animate__bounceIn"
+                                             title="@item.File.OriginalName" data-contenttype="@item.File.ContentType">
+                                    </a>
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+
+            }
+
+            @if (Model.Message.Sender != null && Model.Message.Sender.Department != null)
+            {
+                <hr />
+                <div class="row">
+                    <div class="col">
+                        <small class="text-black-50">Department: @Model.Message.Sender.Department.Name</small><br />
+                        <small class="text-black-50">Office: @Model.Message.Sender.Department.BranchOffice.Name</small>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+
+</div>
+@if (Model.Message.SenderId.ToString() == User.FindFirstValue(ClaimTypes.NameIdentifier))
+{
+    @*Modal informacion*@
+    <div class="modal fade" id="infoModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 1rem;">
+                <div class="modal-header p-1 bg-warning border-0 pb-0" style="border-radius: 1rem 1rem 0 0;">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body p-0">
+
+                    <table class="table">
+                        <thead class="bg-warning">
+                            <tr>
+                                <th class="border-0 pt-0" scope="col">User</th>
+                                <th class="border-0 pt-0" scope="col">Status</th>
+                                <th class="border-0 pt-0" scope="col">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var receivedMessage in Model.Message.Recipients.ToList())
+                            {
+                                int i = 0;
+                                <tr>
+                                    <td @{ if(receivedMessage.States.Count() > 0) { <text>rowspan="@receivedMessage.States.Count()"</text>  }} class="align-middle"
+                                        style="word-break: break-all;">
+                                        @receivedMessage.User.Email
+                                    </td>
+
+                                    @foreach (var estado in receivedMessage.States.ToList())
+                                    {
+                                        if (i > 0)
+                                        {
+                                        @:</tr><tr>
+                                        }
+                                        <td>@estado.State.ToString()</td>
+                                        <td>@estado.Date.ToString()</td>
+                                        i++;
+                                    }
+                                    @if (!receivedMessage.States.Any())
+                                    {
+                                        <td>Sent</td>
+                                        <td>@Model.Message.Date</td>
+
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+

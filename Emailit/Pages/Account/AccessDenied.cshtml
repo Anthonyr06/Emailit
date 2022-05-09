@@ -1,0 +1,36 @@
+﻿@page
+@model             AccessDeniedModel
+@{
+    ViewData["Title"] = "Access denied";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>@ViewData["Title"]</title>
+    <meta name="viewport" content="width=device-width" />
+    <partial name="ResourcesPartialViews/_CssImportsPartial" />
+    <style>
+        .access-denied-bg {
+            background-image: url('../icon/police-badge.svg');
+            background-repeat: no-repeat;
+            background-size: 40%;
+            background-position: center;
+            
+        }
+        .foreground {
+            backdrop-filter: blur(5px);
+         }
+    </style>
+</head>
+<body class="container pt-5 access-denied-bg vh-100 foreground bg-inbox">
+        <div class="row mt-5 pt-5 ">
+            <div class="col mt-5 offset-3 ">
+                <h1 class="text-danger">Access denied</h1>
+                <h5 class="font-weight-bolder">You do not have the necessary permits to access this resource.</h5>
+            </div>
+        </div>
+</body>
+</html>
