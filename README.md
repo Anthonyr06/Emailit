@@ -1,6 +1,10 @@
 <div id="top"></div>
+
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
-[![License][license-shield]][license-url]
+[![License][license-shield]]()
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
 
@@ -211,10 +215,15 @@ Project Link: [https://github.com/Anthonyr06/Emailit](https://github.com/Anthony
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
-
-[issues-shield]: https://img.shields.io/github/issues/Anthonyr06/Emailit.svg?style=for-the-badge
+[contributors-shield]: https://img.shields.io/github/contributors/Anthonyr06/Emailit?style=for-the-badge
+[contributors-url]: https://github.com/Anthonyr06/Emailit/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/Anthonyr06/Emailit?style=for-the-badge
+[forks-url]: https://github.com/Anthonyr06/Emailit/network/members
+[stars-shield]: https://img.shields.io/github/stars/Anthonyr06/Emailit?style=for-the-badge
+[stars-url]: https://github.com/Anthonyr06/Emailit/stargazers
+[issues-shield]: https://img.shields.io/github/issues/Anthonyr06/Emailit?style=for-the-badge
 [issues-url]: https://github.com/Anthonyr06/Emailit/issues
-[license-shield]: https://img.shields.io/github/license/Anthonyr06/Emailit.svg?style=for-the-badge
+[license-shield]: https://img.shields.io/github/license/Anthonyr06/Emailit?style=for-the-badge
 [license-url]: https://github.com/Anthonyr06/Emailit/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/arg06
